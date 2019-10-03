@@ -18,7 +18,7 @@ let parsePath = function(filePath) {
   if (!isPackage) {
     let parsed = {
       relativePath,
-      clientPath: path.join(buildPrefix, 'web.browser', 'app', 'app.js'),
+      clientPath: path.join(buildPrefix, 'web.browser', 'program.json'),
       serverPath: path.join(buildPrefix, 'server', 'app', 'app.js'),
     };
 

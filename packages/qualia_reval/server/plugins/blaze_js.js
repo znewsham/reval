@@ -22,7 +22,12 @@ Plugins.add('BlazeJS', {
               }
             ` + code;
     });
-
+    if (templateNames.length === 1) {
+      return {
+        code,
+        templateName: templateNames[0]
+      };
+    }
     return code;
   },
 

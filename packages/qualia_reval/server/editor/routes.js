@@ -6,9 +6,10 @@ import Editor from './editor.js';
 import Utils from '../utils.js';
 import Reval from '../reval.js';
 
+
 let cdnURL = 'https://unpkg.com/monaco-editor@0.11.1/min';
 
-Picker.route('/reval/edit', function(params, request, response) {
+Picker.route(__meteor_runtime_config__.ROOT_URL_PATH_PREFIX + '/reval/edit', function(params, request, response) {
 
   try {
     let filePath = params.query.filePath || Utils.findFilePath(params.query.templateName, params.query.sourceType);
@@ -29,13 +30,13 @@ Picker.route('/reval/edit', function(params, request, response) {
     response.end(editorHTML);
   }
   catch(e) {
-    console.log(request);
+    console.error(e);
     response.writeHead(500, {'Content-Type': 'text/html'})
     response.end(`Unable to resolve ${request.originalUrl} to a source file.`);
   }
 });
 
-Picker.route('/reval/read', function(params, request, response) {
+Picker.route(__meteor_runtime_config__.ROOT_URL_PATH_PREFIX + '/reval/read', function(params, request, response) {
 
   try {
     let filePath = params.query.filePath || Utils.findFilePath(params.query.templateName, params.query.sourceType);
@@ -58,7 +59,7 @@ Picker.route('/reval/read', function(params, request, response) {
   }
 });
 
-Picker.route('/reval/files', function(params, request, response) {
+Picker.route(__meteor_runtime_config__.ROOT_URL_PATH_PREFIX + '/reval/files', function(params, request, response) {
   response.writeHead(200, {'Content-Type': 'text/html'})
 
   try {
@@ -70,7 +71,7 @@ Picker.route('/reval/files', function(params, request, response) {
   }
 });
 
-Picker.route('/reval/worker-proxy.js', function(params, request, response) {
+Picker.route(__meteor_runtime_config__.ROOT_URL_PATH_PREFIX + '/reval/worker-proxy.js', function(params, request, response) {
   response.writeHead(200, {'Content-Type': 'text/javascript'})
   response.end(`
     self.MonacoEnvironment = {

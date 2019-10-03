@@ -8,7 +8,7 @@ import {reloadPage} from './blaze.js';
 Reval = {
 
   initialize() {
-    this.revalFiles = new Mongo.Collection('reval_files');
+    window.revalFiles = this.revalFiles = new Mongo.Collection('reval_files');
     Meteor.subscribe('revalFiles');
 
     this.reloadPage = _.throttle(reloadPage, 1000);
@@ -35,16 +35,16 @@ Reval = {
   },
 
   save(files=[]) {
-    $.post('/reval/save', JSON.stringify(files));
+    $.post(__meteor_runtime_config__.ROOT_URL_PATH_PREFIX +  + '/reval/save', JSON.stringify(files));
   },
 
   clear(files=[]) {
-    $.post('/reval/clear', JSON.stringify(files));
+    $.post(__meteor_runtime_config__.ROOT_URL_PATH_PREFIX + '/reval/clear', JSON.stringify(files));
   },
 
   publish() {
     return new Promise(resolve => {
-      $.get('/reval/publish', url => resolve(url));
+      $.get(__meteor_runtime_config__.ROOT_URL_PATH_PREFIX + '/reval/publish', url => resolve(url));
     });
   },
 
@@ -66,13 +66,23 @@ Reval = {
             ? 'html'
             : 'body'
         );
-        this.reloadPage(baseElem);
+        let baseElemData;
+        const $elem = $(`#${revalFile.templateName}`);
+        if (revalFile.templateName && $elem.length === 1) {
+          const view = Blaze.getView($elem[0])
+          if (view.name == `Template.${revalFile.templateName}`) {
+            baseElem = `#${revalFile.templateName}`;
+            baseElemData = $elem.data();
+          }
+        }
+        this.reloadPage(baseElem, baseElemData);
       }
     };
 
     Meteor.startup(() => {
       let cursor = this.revalFiles.find({client: true}, {
         fields: {
+          templateName: 1,
           path: 1,
           client: 1,
           clientEval: 1,
@@ -85,20 +95,20 @@ Reval = {
   getEditURL({templateName, sourceType, filePath}) {
     if (filePath) {
       sourceType = filePath.split('.').pop();
-      return `/reval/edit?filePath=${filePath}&sourceType=${sourceType}`;
+      return __meteor_runtime_config__.ROOT_URL_PATH_PREFIX + `/reval/edit?filePath=${filePath}&sourceType=${sourceType}`;
     }
     else {
-      return `/reval/edit?templateName=${templateName}&sourceType=${sourceType}`;
+      return __meteor_runtime_config__.ROOT_URL_PATH_PREFIX + `/reval/edit?templateName=${templateName}&sourceType=${sourceType}`;
     }
   },
 
   getReadURL({templateName, sourceType, filePath}) {
     if (filePath) {
       sourceType = filePath.split('.').pop();
-      return `/reval/read?filePath=${filePath}&sourceType=${sourceType}`;
+      return __meteor_runtime_config__.ROOT_URL_PATH_PREFIX + `/reval/read?filePath=${filePath}&sourceType=${sourceType}`;
     }
     else {
-      return `/reval/read?templateName=${templateName}&sourceType=${sourceType}`;
+      return __meteor_runtime_config__.ROOT_URL_PATH_PREFIX + `/reval/read?templateName=${templateName}&sourceType=${sourceType}`;
     }
   },
 

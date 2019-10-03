@@ -5,11 +5,24 @@ Blaze._createView = function(view, parentView, forExpansion) {
   view._dep = new Tracker.Dependency();
 
   let render = view._render;
+  //let jQueryData;
   view._render = function() {
     view._dep.depend();
-    return render.apply(view, arguments);
+    const newView = render.apply(view, arguments);
+    Tracker.afterFlush(() => {
+      if (jQueryData && newView && newView._domrange) {
+        const actual = newView._domrange.members.filter(elem => elem.constructor !== Text);
+        if (actual.length === 1) {
+          $(actual[0]).data(jQueryData);
+        }
+      }
+    });
+    return newView;
   };
-  view.rerender = () => view._dep.changed();
+  view.rerender = (baseData) => {
+    jQueryData = baseData;
+    view._dep.changed();
+  };
 
   return createView.call(this, view, parentView, forExpansion);
 };
@@ -32,7 +45,9 @@ let getRoots = function(base) {
       baseElem = $(base)[0],
       baseView = Blaze.getView(baseElem)
   ;
-
+  if (baseView && baseView.name.startsWith("Template.")) {
+    baseView = baseView.parentView;
+  }
   $(base + ' *').each((i, e) => {
     let root = getRoot(e, baseView);
     if (root) {
@@ -43,8 +58,8 @@ let getRoots = function(base) {
   return Array.from(roots);
 };
 
-let reloadPage = function(base='body') {
-  getRoots(base).forEach(view => view.rerender());
+let reloadPage = function(base='body', baseData) {
+  getRoots(base).forEach(view => view.rerender(baseData));
 };
 
 export {reloadPage};

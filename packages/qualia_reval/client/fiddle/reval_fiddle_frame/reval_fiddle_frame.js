@@ -34,7 +34,7 @@ Template.revalFiddleFrame.onCreated(function() {
 
     templateToURL(templateName, extension) {
       return templateName
-        ? `/reval/edit?templateName=${templateName}&sourceType=${extension}`
+        ? __meteor_runtime_config__.ROOT_URL_PATH_PREFIX + `/reval/edit?templateName=${templateName}&sourceType=${extension}`
         : ''
       ;
     },
@@ -42,7 +42,7 @@ Template.revalFiddleFrame.onCreated(function() {
     filePathToURL(filePath) {
       let extension = (filePath || '').split('.').pop();
       return filePath
-        ? `/reval/edit?filePath=${filePath}&sourceType=${extension}`
+        ? __meteor_runtime_config__.ROOT_URL_PATH_PREFIX + `/reval/edit?filePath=${filePath}&sourceType=${extension}`
         : ''
       ;
     },

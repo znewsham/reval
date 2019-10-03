@@ -35,7 +35,7 @@ export default {
     let dummy = new Mongo.Collection('reval.dummy', {connection: null}),
         ClientVersions = dummy._driver.noConnCollections['meteor_autoupdate_clientVersions']
     ;
-
+    return;
     ClientVersions.find({_id: 'version'}).observe({
       changed: () => {
         this.onReload();
@@ -193,7 +193,7 @@ export default {
     if (extension === 'js') {
       locations = Utils.findFile(filePath);
     }
-
+    console.log(locations);
     // Maybe run code on client
     if (locations.client) {
       let compiledCode = Plugins.compile({
@@ -220,26 +220,53 @@ export default {
   },
 
   evalClient(path, code) {
-    this.revalFiles.update({path}, {
-      $set: {
-        client: true,
-        clientEval: code,
-        cleared: false,
-      },
-    });
+    if (_.isObject(code)) {
+        code.clientEval = code.code;
+        delete code.code;
+        this.revalFiles.update({path}, {
+          $set: _.extend({
+            client: true,
+            cleared: false,
+          }, code),
+        });
+    }
+    else {
+      this.revalFiles.update({path}, {
+        $set: {
+          client: true,
+          clientEval: code,
+          cleared: false,
+        },
+      });
+    }
   },
 
   evalServer(path, code) {
     try {
-      let script = new vm.Script(code, {name: path});
-      script.runInThisContext();
-      this.revalFiles.update({path}, {
-        $set: {
-          server: true,
-          serverEval: code,
-          cleared: false,
-        }
-      });
+      if (_.isObject(code)) {
+          let script = new vm.Script(code.code, {name: path});
+          script.runInThisContext();
+          code.serverEval = code.code;
+          delete code.code;
+
+          this.revalFiles.update({path}, {
+            $set: _.extend({
+              client: true,
+              cleared: false,
+            }, code),
+          });
+      }
+      else {
+        let script = new vm.Script(code, {name: path});
+        script.runInThisContext();
+        this.revalFiles.update({path}, {
+          $set: {
+            server: true,
+            serverEval: code,
+            cleared: false,
+          }
+        });
+      }
     }
     catch(e) {
       let error = e.stack || e || `Failed to eval ${path}`,

@@ -209,6 +209,7 @@ Template.revalUI.onCreated(function() {
 
           body {
             position: absolute !important;
+            overflow: auto !important;
             left: 0px !important;
             right: 0px !important;
             top: 0px !important;

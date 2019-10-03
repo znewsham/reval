@@ -16,11 +16,13 @@ Plugins.add('BlazeHTML', {
         match
     ;
 
+    let templateNames = [];
     while (match = regex.exec(code)) {
       let templateName = match[1],
           html = match[2],
           compiledHTML
       ;
+      templateNames.push(templateName);
 
       try {
         compiledHTML = SpacebarsCompiler.compile(html);
@@ -39,6 +41,12 @@ Plugins.add('BlazeHTML', {
         `;
     }
 
+    if (templateNames.length === 1) {
+      return {
+        code: result,
+        templateName: templateNames[0]
+      };
+    }
     return result;
   },
 

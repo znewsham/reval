@@ -15,6 +15,9 @@ export default {
   compile({filePath, code, location}) {
     let extension = filePath.split('.').pop();
 
+    let ret = {
+      code
+    };
     this.plugins.forEach(plugin => {
       let hasExtension = _.include(plugin.extensions, extension),
           hasLocation = _.include(plugin.locations, location);
@@ -23,21 +26,26 @@ export default {
       }
 
       try {
-        let newCode = plugin.compile({filePath, code, location});
+        let newCode = plugin.compile({filePath, code: ret.code, location});
         if (newCode !== undefined) {
-          code = newCode
+          if (_.isObject(newCode)) {
+            _.extend(ret, newCode);
+          }
+          else {
+            ret.code = newCode;
+          }
         }
       }
       catch(e) {
         console.error(e.message);
         console.error(e.stack);
         // code = `console.error(\`Can't eval invalid ${e.stack}\`)`;
-        code = '';
+        ret.code = '';
       }
 
     });
 
-    return code;
+    return ret;
   },
 
 };

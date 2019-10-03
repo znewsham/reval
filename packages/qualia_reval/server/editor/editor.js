@@ -1,8 +1,7 @@
 import {Blaze} from 'meteor/blaze';
 import {SpacebarsCompiler} from 'meteor/spacebars-compiler';
-import {Spacebars} from 'meteor/spacebars';
 
-let compiledHTML = SpacebarsCompiler.compile(Assets.getText('server/editor/editor.html')),
+let compiledHTML = SpacebarsCompiler.compile(Assets.getText('server/editor/editor._html')),
     Editor = new Blaze.Template('revalEditor', function() {
       var view = this;
       return eval(compiledHTML)()

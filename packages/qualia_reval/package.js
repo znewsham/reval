@@ -29,7 +29,7 @@ Package.onUse(function(api) {
   ], ['client', 'server']);
 
   api.addAssets([
-    'server/editor/editor.html',
+    'server/editor/editor._html',
     'assets/ngrok_darwin',
     'assets/ngrok_linux',
   ], 'server');
