@@ -6,5 +6,3 @@ import './ui';
 import './fiddle';
 
 export { Reval };
-
-Template.proxies = {};

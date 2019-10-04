@@ -197,6 +197,7 @@ export default {
     // Maybe run code on client
     if (locations.client) {
       let compiledCode = Plugins.compile({
+        projectRoot: Utils.getProjectRoot(),
         filePath,
         code,
         location: 'client',
@@ -207,6 +208,7 @@ export default {
     // Maybe run code on server
     if (locations.server) {
       let compiledCode = Plugins.compile({
+        projectRoot: Utils.getProjectRoot(),
         filePath,
         code,
         location: 'server',

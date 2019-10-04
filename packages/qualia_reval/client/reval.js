@@ -70,7 +70,7 @@ Reval = {
         const $elem = $(`#${revalFile.templateName}`);
         if (revalFile.templateName && $elem.length === 1) {
           const view = Blaze.getView($elem[0])
-          if (view.name == `Template.${revalFile.templateName}`) {
+          if (view && view.name == `Template.${revalFile.templateName}`) {
             baseElem = `#${revalFile.templateName}`;
             baseElemData = $elem.data();
           }

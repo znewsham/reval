@@ -12,7 +12,7 @@ export default {
     this.plugins.unshift(plugin);
   },
 
-  compile({filePath, code, location}) {
+  compile({filePath, code, location, projectRoot}) {
     let extension = filePath.split('.').pop();
 
     let ret = {
@@ -26,7 +26,7 @@ export default {
       }
 
       try {
-        let newCode = plugin.compile({filePath, code: ret.code, location});
+        let newCode = plugin.compile({filePath, code: ret.code, location, projectRoot});
         if (newCode !== undefined) {
           if (_.isObject(newCode)) {
             _.extend(ret, newCode);

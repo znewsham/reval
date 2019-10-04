@@ -68,8 +68,8 @@ export default {
 
     let exclude = `--exclude-dir=.git --exclude-dir=.meteor --exclude-dir=.npm --exclude-dir=.common`;
     let command = {
-      js: `grep -ril --include='*.js' ${exclude} -e "Template\\.${templateName}\\." -e "register(['\\"]${templateName}['\\"])" ${rootDir}`,
-      html: `grep -ril --include='*.html' --include='*.jade' ${exclude} -e "template name=[\\"']${templateName}[\\"']" -e "template(name=[\\"']${templateName}[\\"'])" ${rootDir}`,
+      js: `grep -Ril --include='*.js' ${exclude} -e "Template\\.${templateName}\\." -e "register(['\\"]${templateName}['\\"])" ${rootDir}`,
+      html: `grep -Ril --include='*.html' --include='*.jade' ${exclude} -e "template name=[\\"']${templateName}[\\"']" -e "template(name=[\\"']${templateName}[\\"'])" ${rootDir}`,
     }[sourceType];
 
     return childProcess
@@ -77,6 +77,11 @@ export default {
         .toString()
         .split('\n')[0]
     ;
+  },
+
+  getProjectRoot() {
+    console.log(process.env.INIT_CWD);
+    return process.env.INIT_CWD;
   },
 
   findFile(filePath) {
@@ -89,7 +94,8 @@ export default {
 
     if (parsed.clientPath && fs.existsSync(parsed.clientPath)) {
       let clientSrc = fs.readFileSync(parsed.clientPath, 'utf8');
-      locations.client = clientSrc.includes(parsed.relativePath) || clientSrc.includes(parsed.escapedRelativePath);
+      let clientSrc2 = fs.readFileSync(parsed.clientPath.replace("program.json", "app/app.js"));
+      locations.client = clientSrc.includes(parsed.relativePath) || clientSrc.includes(parsed.escapedRelativePath) || clientSrc2.includes(parsed.relativePath);
     }
 
     if (parsed.serverPath && fs.existsSync(parsed.serverPath)) {
