@@ -8,6 +8,7 @@ import './blaze_js.js';
 import './blaze_components.js';
 import './blaze_component.js';
 import './css.js';
+import './scss.js';
 
 if (require.resolve('meteor/mquandalle:jade-compiler').endsWith('.js')) {
   import './jade.js';

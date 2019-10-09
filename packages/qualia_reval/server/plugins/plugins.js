@@ -26,6 +26,7 @@ export default {
       }
 
       try {
+        console.log(plugin);
         let newCode = plugin.compile({filePath, code: ret.code, location, projectRoot});
         if (newCode !== undefined) {
           if (_.isObject(newCode)) {

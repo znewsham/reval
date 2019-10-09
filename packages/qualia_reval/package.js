@@ -7,6 +7,9 @@ Package.describe({
   debugOnly: true,
 });
 
+Npm.depends({
+  "node-sass": "4.12.0"
+})
 Package.onUse(function(api) {
   api.versionsFrom('METEOR@1.4');
 
