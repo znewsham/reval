@@ -17,33 +17,13 @@ Plugins.add('BlazeComponent', {
 
     _.unique(templateNames).forEach(templateName => {
       code = `
-              var oldTemplate;
               if (Template['${templateName}']) {
-                if (!Template.proxies['${templateName}']) {
-                  oldTemplate = Template['${templateName}'];
-                  Template['${templateName}'] = new Proxy(new Template('Template.dummy', () => {}), {
-                    get(target, key) {
-                      return Template.proxies['${templateName}'][key];
-                    },
-                    set(target, key, value) {
-                      Template.proxies['${templateName}'][key] = value;
-                    }
-                  });
-                }
-
-                Template.proxies['${templateName}'] = new Template('Template.${templateName}', (oldTemplate || Template.proxies['${templateName}']).renderFunction);
+                new Template('Template.${templateName}', (Template.proxies['Template.${templateName}']).renderFunction);
               }
             ` + code;
 
       code = `
       ${code}
-      // HACK: handle partial re-rendering
-      if (oldTemplate) {
-        oldTemplate.__eventMaps = Template['${templateName}'].__eventMaps;
-        oldTemplate.__helpers = Template['${templateName}'].__helpers;
-        oldTemplate._callbacks = Template['${templateName}']._callbacks;
-        oldTemplate.reval = ${Math.random()};
-      }
       `;
     });
 
