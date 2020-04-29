@@ -8,8 +8,8 @@ Plugins.add('SCSS', {
   locations: ['client'],
 
   compile({filePath, code}) {
-    console.log(require("node-sass"));
     const css = String(sass.renderSync({ data: code }).css);
+    console.log(css);
     return `
       var filePath = \`${filePath}\`,
           existingCSS = document.getElementById(filePath),
